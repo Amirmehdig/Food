@@ -1,4 +1,17 @@
+USE FoodsDB
+GO
+
+-- Drop all foreign key constraints
+DECLARE @SQL varchar(4000) = '';
+SELECT @SQL = @SQL + 'ALTER TABLE ' + s.name + '.' + t.name + ' DROP CONSTRAINT [' + RTRIM(f.name) + '];' + CHAR(13)
+FROM sys.Tables t
+INNER JOIN sys.foreign_keys f ON f.parent_object_id = t.object_id
+INNER JOIN sys.schemas s ON s.schema_id = f.schema_id;
+EXEC(@SQL);
+
+
 -- Users Table
+DROP TABLE IF EXISTS dbo.Users
 CREATE TABLE Users (
     user_id INT PRIMARY KEY,
     name NVARCHAR(255) NOT NULL,
@@ -12,6 +25,7 @@ CREATE TABLE Users (
 );
 
 -- Restaurants Table
+DROP TABLE IF EXISTS dbo.Restaurants
 CREATE TABLE Restaurants (
     restaurant_id INT PRIMARY KEY,
     name NVARCHAR(255) NOT NULL,
@@ -23,6 +37,7 @@ CREATE TABLE Restaurants (
 );
 
 -- Food Table
+DROP TABLE IF EXISTS dbo.Food
 CREATE TABLE Food (
     food_id INT PRIMARY KEY,
     name NVARCHAR(255) NOT NULL,
@@ -35,6 +50,7 @@ CREATE TABLE Food (
 );
 
 -- OrderHeader Table
+DROP TABLE IF EXISTS dbo.OrderHeader
 CREATE TABLE OrderHeader (
     order_id INT PRIMARY KEY,
     order_date DATETIME DEFAULT GETDATE(),
@@ -48,6 +64,7 @@ CREATE TABLE OrderHeader (
 );
 
 -- OrderDetail Table
+DROP TABLE IF EXISTS dbo.OrderDetail
 CREATE TABLE OrderDetail (
     order_detail_id INT PRIMARY KEY,
     order_id INT,
@@ -59,7 +76,8 @@ CREATE TABLE OrderDetail (
 );
 
 -- Delivery Person Table
-CREATE TABLE Delivery_Person (
+DROP TABLE IF EXISTS dbo.DeliveryPerson
+CREATE TABLE DeliveryPerson (
     delivery_person_id INT PRIMARY KEY,
     name NVARCHAR(255) NOT NULL,
     phone_number NVARCHAR(10),
@@ -70,6 +88,7 @@ CREATE TABLE Delivery_Person (
 );
 
 -- Comments Table
+DROP TABLE IF EXISTS dbo.Comments
 CREATE TABLE Comments (
     comment_id INT PRIMARY KEY,
     order_id INT UNIQUE,  -- Ensure one comment per order
@@ -79,3 +98,4 @@ CREATE TABLE Comments (
     FOREIGN KEY (order_id) REFERENCES OrderHeader(order_id)
 );
 
+	
