@@ -49,6 +49,16 @@ CREATE TABLE Food (
     FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
 );
 
+-- Delivery Person Table
+DROP TABLE IF EXISTS dbo.DeliveryPerson
+CREATE TABLE DeliveryPerson (
+    delivery_person_id INT PRIMARY KEY,
+    name NVARCHAR(255) NOT NULL,
+    phone_number NVARCHAR(10),
+    vehicle_type NVARCHAR(50),
+    availability_status BIT DEFAULT 1,
+);
+
 -- OrderHeader Table
 DROP TABLE IF EXISTS dbo.OrderHeader
 CREATE TABLE OrderHeader (
@@ -59,8 +69,10 @@ CREATE TABLE OrderHeader (
     status NVARCHAR(50) NOT NULL,
     user_id INT,
     restaurant_id INT,
-    FOREIGN KEY (user_id) REFERENCES Users(user_id),
-    FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
+	delivery_person_id INT,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),    
+	FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id),
+	FOREIGN KEY (delivery_person_id) REFERENCES DeliveryPerson(delivery_person_id)
 );
 
 -- OrderDetail Table
@@ -73,18 +85,6 @@ CREATE TABLE OrderDetail (
     subtotal DECIMAL(10, 2) NOT NULL,
     FOREIGN KEY (order_id) REFERENCES OrderHeader(order_id),
     FOREIGN KEY (food_id) REFERENCES Food(food_id)
-);
-
--- Delivery Person Table
-DROP TABLE IF EXISTS dbo.DeliveryPerson
-CREATE TABLE DeliveryPerson (
-    delivery_person_id INT PRIMARY KEY,
-    name NVARCHAR(255) NOT NULL,
-    phone_number NVARCHAR(10),
-    vehicle_type NVARCHAR(50),
-    availability_status BIT DEFAULT 1,
-    current_order_id INT,
-    FOREIGN KEY (current_order_id) REFERENCES OrderHeader(order_id)
 );
 
 -- Comments Table
