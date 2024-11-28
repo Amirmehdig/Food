@@ -13,13 +13,13 @@ EXEC(@SQL);
 -- Users Table
 DROP TABLE IF EXISTS dbo.Users
 CREATE TABLE Users (
-    user_id INT PRIMARY KEY,
+    user_id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(255) NOT NULL,
     email NVARCHAR(255) UNIQUE NOT NULL,
     password NVARCHAR(255) NOT NULL,
     phone_number NVARCHAR(10),
     address NVARCHAR(MAX),
-    registration_date DATE NOT NULL,
+    registration_date DATETIME NOT NULL,
     is_active BIT DEFAULT 1,
     role NVARCHAR(50) NOT NULL
 );
@@ -27,7 +27,7 @@ CREATE TABLE Users (
 -- Restaurants Table
 DROP TABLE IF EXISTS dbo.Restaurants
 CREATE TABLE Restaurants (
-    restaurant_id INT PRIMARY KEY,
+    restaurant_id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(255) NOT NULL,
     address NVARCHAR(MAX),
     phone_number NVARCHAR(10),
@@ -39,7 +39,7 @@ CREATE TABLE Restaurants (
 -- Food Table
 DROP TABLE IF EXISTS dbo.Food
 CREATE TABLE Food (
-    food_id INT PRIMARY KEY,
+    food_id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     description NVARCHAR(MAX),
@@ -52,7 +52,7 @@ CREATE TABLE Food (
 -- Delivery Person Table
 DROP TABLE IF EXISTS dbo.DeliveryPerson
 CREATE TABLE DeliveryPerson (
-    delivery_person_id INT PRIMARY KEY,
+    delivery_person_id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(255) NOT NULL,
     phone_number NVARCHAR(10),
     vehicle_type NVARCHAR(50),
@@ -62,7 +62,7 @@ CREATE TABLE DeliveryPerson (
 -- OrderHeader Table
 DROP TABLE IF EXISTS dbo.OrderHeader
 CREATE TABLE OrderHeader (
-    order_id INT PRIMARY KEY,
+    order_id INT PRIMARY KEY IDENTITY(1,1),
     order_date DATETIME DEFAULT GETDATE(),
     total_amount DECIMAL(10, 2) NOT NULL,
     delivery_time TIME,
@@ -78,7 +78,7 @@ CREATE TABLE OrderHeader (
 -- OrderDetail Table
 DROP TABLE IF EXISTS dbo.OrderDetail
 CREATE TABLE OrderDetail (
-    order_detail_id INT PRIMARY KEY,
+    order_detail_id INT PRIMARY KEY IDENTITY(1,1),
     order_id INT,
     food_id INT,
     quantity INT NOT NULL,
@@ -90,7 +90,7 @@ CREATE TABLE OrderDetail (
 -- Comments Table
 DROP TABLE IF EXISTS dbo.Comments
 CREATE TABLE Comments (
-    comment_id INT PRIMARY KEY,
+    comment_id INT PRIMARY KEY IDENTITY(1,1),
     order_id INT UNIQUE,  -- Ensure one comment per order
     rating FLOAT CHECK (rating BETWEEN 1 AND 5), -- Rating between 1 and 5
     comment_text NVARCHAR(MAX),
