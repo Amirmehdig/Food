@@ -42,6 +42,8 @@ END;
 GO
 
 
+
+
 IF OBJECT_ID('trg_AdjustFoodAvailability', 'TR') IS NOT NULL
     DROP TRIGGER trg_AdjustFoodAvailability;
 GO
@@ -67,5 +69,38 @@ BEGIN
         FROM Food
         WHERE available_count <= 0
     );
+END;
+GO
+
+
+
+
+IF OBJECT_ID('trg_PreventRestaurantDeletion', 'TR') IS NOT NULL
+    DROP TRIGGER trg_PreventRestaurantDeletion;
+GO
+
+CREATE TRIGGER trg_PreventRestaurantDeletion
+ON Restaurants
+INSTEAD OF DELETE
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Check if there are active orders for the restaurant being deleted
+    IF EXISTS (
+        SELECT 1
+        FROM deleted d
+        INNER JOIN OrderHeader o ON d.restaurant_id = o.restaurant_id
+        WHERE o.status IN ('Pending', 'Processing') -- Modify statuses as per your system
+    )
+    BEGIN
+        RAISERROR ('Cannot delete a restaurant with active orders.', 16, 1);
+        ROLLBACK TRANSACTION;
+        RETURN;
+    END;
+
+    -- Proceed with the deletion if no active orders
+    DELETE FROM Restaurants
+    WHERE restaurant_id IN (SELECT restaurant_id FROM deleted);
 END;
 GO
