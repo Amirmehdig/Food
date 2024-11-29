@@ -57,7 +57,7 @@ BEGIN
     END
 
     BEGIN TRY
-        INSERT INTO Food (name, description, price, restaurant_id, availability)
+        INSERT INTO Food (name, description, price, restaurant_id, is_available)
         VALUES (@name, @description, @price, @restaurant_id, @availability);
         
         PRINT 'Food item inserted successfully';
@@ -76,7 +76,7 @@ CREATE OR ALTER PROCEDURE InsertDeliveryPerson
 AS
 BEGIN
     BEGIN TRY
-        INSERT INTO DeliveryPerson (name, phone_number, is_available)
+        INSERT INTO DeliveryPerson (name, phone_number, availability_status)
         VALUES (@name, @phone_number, @is_available);
         
         PRINT 'Delivery person inserted successfully';
@@ -165,7 +165,7 @@ CREATE OR ALTER PROCEDURE InsertComment
     @order_id INT,
     @comment_text NVARCHAR(MAX),
     @rating INT,
-    @comment_date DATETIME = GETDATE()
+    @comment_date DATETIME
 AS
 BEGIN
     IF NOT EXISTS (SELECT 1 FROM Users WHERE user_id = @user_id)
@@ -181,8 +181,8 @@ BEGIN
     END
 
     BEGIN TRY
-        INSERT INTO Comments (user_id, order_id, comment_text, rating, comment_date)
-        VALUES (@user_id, @order_id, @comment_text, @rating, @comment_date);
+        INSERT INTO Comments (order_id, comment_text, rating, comment_date)
+        VALUES (@order_id, @comment_text, @rating, @comment_date);
         
         PRINT 'Comment inserted successfully';
     END TRY
