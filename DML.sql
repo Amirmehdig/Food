@@ -128,7 +128,7 @@ VALUES
 ('Brownies', 3.99, 'Fudgy chocolate brownies', 1, 1000, 10, 0);
 
 
--- Delivery Person Datas
+-- Delivery Person Data
 INSERT INTO DeliveryPerson (name, phone_number, vehicle_type, availability_status)
 VALUES
 -- Delivery Persons
@@ -145,7 +145,7 @@ VALUES
 ('Olivia Lewis', '1234567899', 'Scooter', 1);
 
 
--- Order Header and Order Detail Datas
+-- Order Header and Order Detail Data
 DECLARE @i INT = 1;
 
 WHILE @i <= 100
@@ -176,3 +176,18 @@ BEGIN
     SET @i = @i + 1;
 END;
 
+
+-- Comments Data
+INSERT INTO Comments (order_id, rating, comment_text)
+VALUES
+(1, 4, 'Great!'),
+(2, 5, 'Great!'),
+(3, 3, 'Great!'),
+(4, 2, 'Great!'),
+(5, 3, 'Great!'),
+(6, 1, 'Great!'),
+(7, 3.5, 'Great!'),
+(8, 4.5, 'Great!'),
+(9, 2.7, 'Great!'),
+(10, 1.4, 'Great!'),
+(11, 2, 'Great!');
