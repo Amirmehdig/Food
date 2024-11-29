@@ -11,15 +11,15 @@ BEGIN
 
         SELECT 
             c.comment_id,
-            c.user_id,
+            u.user_id,
             u.name AS user_name,
             c.comment_text,
             c.rating,
             c.comment_date
         FROM 
             Comments c INNER JOIN 
-            Users u ON c.user_id = u.user_id INNER JOIN 
-            OrderHeader oh ON c.order_id = oh.order_id
+            OrderHeader oh ON c.order_id = oh.order_id INNER JOIN
+            Users u ON oh.user_id = u.user_id 
         WHERE 
             oh.restaurant_id = @restaurant_id
         ORDER BY 
@@ -50,7 +50,7 @@ BEGIN
             oh.restaurant_id,
             r.name AS restaurant_name,
             oh.order_date,
-            oh.total_price,
+            oh.total_amount,
             oh.status,
             dp.name AS delivery_person_name
         FROM 
@@ -69,3 +69,34 @@ BEGIN
     END CATCH
 END
 GO
+
+------------------------------------------------------
+CREATE OR ALTER PROCEDURE GetUsersWithoutOrders
+AS
+BEGIN
+    BEGIN TRY
+        SELECT 
+            u.user_id,
+            u.name,
+            u.email,
+            u.phone_number,
+            u.registration_date
+        FROM 
+            Users u
+        WHERE 
+            NOT EXISTS (
+                SELECT 1
+                FROM OrderHeader oh
+                WHERE oh.user_id = u.user_id
+            )
+        ORDER BY 
+            u.registration_date ASC;
+
+        PRINT 'Query executed successfully.';
+    END TRY
+    BEGIN CATCH
+        PRINT 'Error: ' + ERROR_MESSAGE();
+    END CATCH
+END
+GO
+------------------------------------------------------
