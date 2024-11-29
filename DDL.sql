@@ -37,17 +37,19 @@ CREATE TABLE Restaurants (
 );
 
 -- Food Table
-DROP TABLE IF EXISTS dbo.Food
+DROP TABLE IF EXISTS dbo.Food;
 CREATE TABLE Food (
     food_id INT PRIMARY KEY IDENTITY(1,1),
     name NVARCHAR(255) NOT NULL,
     price DECIMAL(10, 2) NOT NULL,
     description NVARCHAR(MAX),
     is_available BIT DEFAULT 1,
+    available_count INT NOT NULL DEFAULT 0,
     restaurant_id INT,
     rating FLOAT DEFAULT 0,
     FOREIGN KEY (restaurant_id) REFERENCES Restaurants(restaurant_id)
 );
+
 
 -- Delivery Person Table
 DROP TABLE IF EXISTS dbo.DeliveryPerson

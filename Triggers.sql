@@ -1,19 +1,18 @@
 USE FoodsDB
 GO
 
--- Drop trigger if exists
-IF OBJECT_ID('trg_UpdateRestaurantRating', 'TR') IS NOT NULL
-    DROP TRIGGER trg_UpdateRestaurantRating;
+IF OBJECT_ID('trg_UpdateRatings', 'TR') IS NOT NULL
+    DROP TRIGGER trg_UpdateRatings;
 GO
 
-
-CREATE TRIGGER trg_UpdateRestaurantRating
+CREATE TRIGGER trg_UpdateRatings
 ON Comments
 AFTER INSERT, UPDATE
 AS
 BEGIN
     SET NOCOUNT ON;
 
+    -- Update the average rating for the restaurant
     UPDATE Restaurants
     SET rating = (
         SELECT AVG(CAST(c.rating AS FLOAT))
@@ -24,4 +23,49 @@ BEGIN
     FROM Restaurants
     INNER JOIN OrderHeader o ON Restaurants.restaurant_id = o.restaurant_id
     INNER JOIN inserted i ON o.order_id = i.order_id;
+
+    -- Update the average rating for all food items in the order
+    UPDATE Food
+    SET rating = (
+        SELECT AVG(CAST(c.rating AS FLOAT))
+        FROM Comments c
+        INNER JOIN OrderDetail od ON c.order_id = od.order_id
+        WHERE od.food_id = Food.food_id
+    )
+    FROM Food
+    WHERE food_id IN (
+        SELECT od.food_id
+        FROM OrderDetail od
+        INNER JOIN inserted i ON od.order_id = i.order_id
+    );
 END;
+GO
+
+
+IF OBJECT_ID('trg_AdjustFoodAvailability', 'TR') IS NOT NULL
+    DROP TRIGGER trg_AdjustFoodAvailability;
+GO
+
+CREATE TRIGGER trg_AdjustFoodAvailability
+ON OrderDetail
+AFTER INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Decrement the available_count for each food item in the new order
+    UPDATE Food
+    SET available_count = available_count - i.quantity
+    FROM Food
+    INNER JOIN inserted i ON Food.food_id = i.food_id;
+
+    -- Set is_available to 0 if available_count reaches 0
+    UPDATE Food
+    SET is_available = 0
+    WHERE food_id IN (
+        SELECT food_id
+        FROM Food
+        WHERE available_count <= 0
+    );
+END;
+GO
