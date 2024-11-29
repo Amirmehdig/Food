@@ -183,11 +183,11 @@ VALUES
 (1, 4, 'Great!'),
 (2, 5, 'Great!'),
 (3, 3, 'Great!'),
-(4, 2, 'Great!'),
+(4, 2, 'ummmm?!'),
 (5, 3, 'Great!'),
-(6, 1, 'Great!'),
+(6, 1, 'Disgusting!!!'),
 (7, 3.5, 'Great!'),
 (8, 4.5, 'Great!'),
 (9, 2.7, 'Great!'),
-(10, 1.4, 'Great!'),
-(11, 2, 'Great!');
+(10, 1.4, 'Bad!'),
+(11, 2, 'Delivery was so late!!');

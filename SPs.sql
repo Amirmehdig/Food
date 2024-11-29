@@ -141,7 +141,7 @@ BEGIN
         RETURN;
     END
 
-    IF NOT EXISTS (SELECT 1 FROM Food WHERE food_id = @food_id)
+    IF NOT EXISTS (SELECT 1 FROM Food WHERE food_id = @food_id and @quantity <= available_count and is_available = 1)
     BEGIN
         PRINT 'Error: Food ID does not exist in Food table.';
         RETURN;
