@@ -18,7 +18,7 @@ connection_string = (
 )
 # Attention!!!!!!!!!
 # Use the class like below to handle detabase requests
-# db_handler = DBHandler(connection_string)
+db_handler = DBHandler(connection_string)
 
 @app.route('/')
 def home():

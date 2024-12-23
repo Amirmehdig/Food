@@ -51,3 +51,138 @@ class DBHandler:
             return None
         finally:
             conn.close()
+
+    # Login:
+    def insert_user(self, name, email, password, phone_number, address, registration_date, is_active, role):
+        """Inserts a user into the Users table."""
+        query = ("INSERT INTO Users (name, email, password, phone_number,"
+                 "address, registration_date, is_active, role) "
+                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)")
+        params = (name, email, password, phone_number, address, registration_date, is_active, role)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("User inserted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error inserting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def insert_restaurant(self, name, address, phone_number, opening_hours, rating, is_open, owner_id):
+        """Inserts a restaurant into the Restaurants table."""
+        query = ("INSERT INTO Restaurants (name, address, phone_number,"
+                 "opening_hours, rating, is_open, owner_id) "
+                 "VALUES (?, ?, ?, ?, ?, ?, ?)")
+        params = (name, address, phone_number, opening_hours, rating, is_open, owner_id)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("User inserted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error inserting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def get_password(self, name):
+        """Fetches password of a user using their name."""
+        query = "SELECT password FROM Users WHERE name = ?"
+        params = (name)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def get_user_id(self, name):
+        """Fetches user_id of a user using their name."""
+        query = "SELECT user_id FROM Users WHERE name = ?"
+        params = (name)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    # Dashboard:
+    def get_profile_data(self, user_id):
+        """Fetches profile of a user using their user_id."""
+        query = "SELECT * FROM Users WHERE user_id = ?"
+        params = (user_id)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def update_profile_data(self, user_id, name, email, password, phone_number, address, is_active):
+        """Updates a user info the using their user_id."""
+        query = ("UPDATE Users"
+                 "SET name = ?,"
+                 "email = ?,"
+                 "phone_number = ?,"
+                 "address = ?,"
+                 "is_active = ?,"
+                 "WHERE id = ?")
+        params = (name, email, password, phone_number, address, is_active, user_id)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("User inserted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error inserting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def 
+
+
+
+
