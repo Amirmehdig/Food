@@ -123,7 +123,7 @@ class DBHandler:
                  "email = ?,"
                  "phone_number = ?,"
                  "address = ?,"
-                 "is_active = ?,"
+                 "is_active = ?"
                  "WHERE user_id = ?")
         params = (name, email, password, phone_number, address, is_active, user_id)
         conn = self.get_connection()
@@ -189,7 +189,7 @@ class DBHandler:
                  "opening_hours = ?,"
                  "rating = ?,"
                  "is_open = ?,"
-                 "owner_id = ?,"
+                 "owner_id = ?"
                  "WHERE restaurant_id = ?")
         params = (name, address, phone_number, opening_hours, rating, is_open, owner_id, restaurant_id)
         conn = self.get_connection()
@@ -270,4 +270,51 @@ class DBHandler:
         finally:
             conn.close()
 
+    def delete_food(self, food_id):
+        """Deletes a food using its food_id."""
+        query = "DELETE FROM Foods WHERE food_id = ?"
+        params = (food_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Food deleted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error deleting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def update_food(self, food_id, name, price, description, is_available, available_count, restaurant_id, rating):
+        """Updates a food using its food_id."""
+        query = ("UPDATE Foods"
+                 "SET name = ?,"
+                 "price = ?,"
+                 "description = ?,"
+                 "is_available = ?,"
+                 "available_count = ?,"
+                 "restaurant_id = ?,"
+                 "rating = ?"
+                 "WHERE food_id = ?")
+        params = (name, price, description, is_available, available_count, restaurant_id, rating, food_id)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Food updated successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error updating data:", e)
+            return None
+        finally:
+            conn.close()
 
