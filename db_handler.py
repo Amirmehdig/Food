@@ -13,45 +13,6 @@ class DBHandler:
             print("Connection failed:", e)
             return None
 
-    def insert_to_food_table(self, name, price, category_id):
-        """Inserts a new item into the food table."""
-        query = "INSERT INTO food (name, price, category_id) VALUES (?, ?, ?)"
-        params = (name, price, category_id)
-        conn = self.get_connection()
-        if not conn:
-            return False
-
-        try:
-            cursor = conn.cursor()
-            cursor.execute(query, params)
-            conn.commit()
-            print("Insert successful!")
-            return True
-        except Exception as e:
-            print("Error inserting data:", e)
-            return False
-        finally:
-            conn.close()
-
-    def get_food_by_category(self, category_id):
-        """Fetches food items based on category."""
-        query = "SELECT id, name, price FROM food WHERE category_id = ?"
-        params = (category_id,)
-        conn = self.get_connection()
-        if not conn:
-            return None
-
-        try:
-            cursor = conn.cursor()
-            cursor.execute(query, params)
-            results = cursor.fetchall()
-            return [{"id": row[0], "name": row[1], "price": row[2]} for row in results]
-        except Exception as e:
-            print("Error fetching data:", e)
-            return None
-        finally:
-            conn.close()
-
     # Login:
     def insert_user(self, name, email, password, phone_number, address, registration_date, is_active, role):
         """Inserts a user into the Users table."""
@@ -100,7 +61,7 @@ class DBHandler:
     def get_password(self, name):
         """Fetches password of a user using their name."""
         query = "SELECT password FROM Users WHERE name = ?"
-        params = (name)
+        params = (name,)
         conn = self.get_connection()
         if not conn:
             return None
@@ -119,7 +80,7 @@ class DBHandler:
     def get_user_id(self, name):
         """Fetches user_id of a user using their name."""
         query = "SELECT user_id FROM Users WHERE name = ?"
-        params = (name)
+        params = (name,)
         conn = self.get_connection()
         if not conn:
             return None
@@ -139,7 +100,7 @@ class DBHandler:
     def get_profile_data(self, user_id):
         """Fetches profile of a user using their user_id."""
         query = "SELECT * FROM Users WHERE user_id = ?"
-        params = (user_id)
+        params = (user_id,)
         conn = self.get_connection()
         if not conn:
             return None
@@ -163,7 +124,7 @@ class DBHandler:
                  "phone_number = ?,"
                  "address = ?,"
                  "is_active = ?,"
-                 "WHERE id = ?")
+                 "WHERE user_id = ?")
         params = (name, email, password, phone_number, address, is_active, user_id)
         conn = self.get_connection()
         if not conn:
@@ -173,16 +134,140 @@ class DBHandler:
             cursor = conn.cursor()
             cursor.execute(query, params)
             conn.commit()
-            print("User inserted successfully!")
+            print("User updated successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error updating data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def delete_profile_data(self, user_id):
+        """Deletes a user info the using their user_id."""
+        query = "DELETE FROM Users WHERE user_id = ?"
+        params = (user_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("User deleted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error deleting data:", e)
+            return
+
+    # Restaurant owner dashboard
+    def get_restaurant_data(self, restaurant_id):
+        """Fetches profile of a restaurant using its restaurant_id."""
+        query = "SELECT * FROM Restaurants WHERE restaurant_id = ?"
+        params = (restaurant_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def update_restaurant_data(self, restaurant_id, name, address,  phone_number, opening_hours, rating, is_open, owner_id):
+        """Updates a restaurant info the using its restaurant_id."""
+        query = ("UPDATE Restaurants"
+                 "SET name = ?,"
+                 "address = ?,"
+                 "phone_number = ?,"
+                 "opening_hours = ?,"
+                 "rating = ?,"
+                 "is_open = ?,"
+                 "owner_id = ?,"
+                 "WHERE restaurant_id = ?")
+        params = (name, address, phone_number, opening_hours, rating, is_open, owner_id, restaurant_id)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Restaurant updated successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error updating data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def delete_restaurant_data(self, restaurant_id):
+        """Deletes a restaurant info the using its restaurant_id."""
+        query = "DELETE FROM Restaurants WHERE restaurant_id = ?"
+        params = (restaurant_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Restaurant deleted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error deleting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    # Foods of a restaurant
+    def get_foods(self, restaurant_id):
+        """Fetches foods of a restaurant using its restaurant_id."""
+        query = "SELECT * FROM Foods WHERE restaurant_id = ?"
+        params = (restaurant_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def insert_food(self, name, price, description, is_available, available_count, restaurant_id, rating):
+        """Inserts food into the Foods table."""
+        query = ("INSERT INTO Foods (name, price, description,"
+                 "is_available, available_count, restaurant_id, rating) "
+                 "VALUES (?, ?, ?, ?, ?, ?, ?)")
+        params = (name, price, description, is_available, available_count, restaurant_id, rating)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Food inserted successfully!")
             return cursor.rowcount
         except Exception as e:
             print("Error inserting data:", e)
             return None
         finally:
             conn.close()
-
-    def 
-
-
 
 
