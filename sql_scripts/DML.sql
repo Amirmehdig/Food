@@ -52,16 +52,16 @@ insert into Users (name, email, password, phone_number, address, registration_da
 
 
 -- Restaurants Data
-insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open) values ('Ziemann, Ankunding and Bailey Restaurant', '7 Loomis Avenue', '7007435710', 'from 6 PM to 11 PM', 0, 1);
-insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open) values ('Haley, Schulist and Schoen Restaurant', '4487 Browning Lane', '3583496047', 'from 6 PM to 11 PM', 0, 1);
-insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open) values ('Huels, Kuvalis and Klocko Restaurant', '9462 Tony Lane', '2642831741', 'from 6 PM to 11 PM', 0, 1);
-insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open) values ('Goodwin, Aufderhar and Smith Restaurant', '82362 Eastwood Park', '6153856164', 'from 6 PM to 11 PM', 0, 1);
-insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open) values ('Strosin-Goodwin Restaurant', '58802 Anhalt Plaza', '9611792762', 'from 6 PM to 11 PM', 0, 1);
-insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open) values ('Murazik LLC Restaurant', '5 Dawn Alley', '1402620801', 'from 6 PM to 11 PM', 0, 1);
-insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open) values ('Wintheiser-O''Connell Restaurant', '21 Scott Place', '9278952880', 'from 6 PM to 11 PM', 0, 1);
-insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open) values ('Parisian, Borer and Green Restaurant', '281 Monument Road', '8797970526', 'from 6 PM to 11 PM', 0, 1);
-insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open) values ('Macejkovic LLC Restaurant', '0 Vernon Court', '2161301894', 'from 6 PM to 11 PM', 0, 1);
-insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open) values ('Mertz, Nader and Marks Restaurant', '08071 Blaine Hill', '1402674122', 'from 6 PM to 11 PM', 0, 1);
+insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open, owner_id) values ('Ziemann, Ankunding and Bailey Restaurant', '7 Loomis Avenue', '7007435710', 'from 6 PM to 11 PM', 0, 1, 1);
+insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open, owner_id) values ('Haley, Schulist and Schoen Restaurant', '4487 Browning Lane', '3583496047', 'from 6 PM to 11 PM', 0, 1, 1);
+insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open, owner_id) values ('Huels, Kuvalis and Klocko Restaurant', '9462 Tony Lane', '2642831741', 'from 6 PM to 11 PM', 0, 1, 3);
+insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open, owner_id) values ('Goodwin, Aufderhar and Smith Restaurant', '82362 Eastwood Park', '6153856164', 'from 6 PM to 11 PM', 0, 1, 6);
+insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open, owner_id) values ('Strosin-Goodwin Restaurant', '58802 Anhalt Plaza', '9611792762', 'from 6 PM to 11 PM', 0, 1, 4);
+insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open, owner_id) values ('Murazik LLC Restaurant', '5 Dawn Alley', '1402620801', 'from 6 PM to 11 PM', 0, 1, 5);
+insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open, owner_id) values ('Wintheiser-O''Connell Restaurant', '21 Scott Place', '9278952880', 'from 6 PM to 11 PM', 0, 1, 13);
+insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open, owner_id) values ('Parisian, Borer and Green Restaurant', '281 Monument Road', '8797970526', 'from 6 PM to 11 PM', 0, 1, 9);
+insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open, owner_id) values ('Macejkovic LLC Restaurant', '0 Vernon Court', '2161301894', 'from 6 PM to 11 PM', 0, 1, 15);
+insert into Restaurants (name, address, phone_number, opening_hours, rating, is_open, owner_id) values ('Mertz, Nader and Marks Restaurant', '08071 Blaine Hill', '1402674122', 'from 6 PM to 11 PM', 0, 1, 10);
 
 
 -- Foods Data

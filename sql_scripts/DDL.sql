@@ -33,7 +33,8 @@ CREATE TABLE Restaurants (
     phone_number NVARCHAR(10),
     opening_hours NVARCHAR(255),
     rating FLOAT DEFAULT 0,
-    is_open BIT DEFAULT 1
+    is_open BIT DEFAULT 1,
+	owner_id INT
 );
 
 -- Food Table
