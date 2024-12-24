@@ -1,11 +1,14 @@
 import pyodbc
-from flask import Flask, render_template
+from flask import Flask, render_template, request, session, redirect, url_for
 from db_handler import DBHandler
+from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = '1234'  # Required for session-based features like flash
+
 
 # Replace these placeholders with your actual SQL Server details
-server = '127.0.0.1'
+server = '.\SQLDEVELOPER'
 database = 'FoodsDB'
 username = 'foodapp'
 password = 'ghaza'
@@ -23,6 +26,29 @@ db_handler = DBHandler(connection_string)
 @app.route('/')
 def home():
     return render_template('home.html')
+
+@app.route('/register/', methods=['GET'])
+def register():
+    return render_template('register.html')
+
+
+@app.route('/register/customer', methods=['POST', 'GET'])
+def register_customer():
+    if request.method == 'POST':
+        name = request.form['name']
+        email = request.form['email']
+        password = request.form['password']
+        confirm_password = request.form['confirm_password']
+        if password != confirm_password:
+            return render_template('register_form.html')
+        phone = request.form['phone']
+        address = request.form['address']
+        db_handler.insert_user(name, email, password, phone, address, datetime.now(), 1, 'Customer')
+        return redirect(url_for('home'))
+    if request.method == 'GET':
+        return render_template('register_form.html')
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -318,3 +318,26 @@ class DBHandler:
         finally:
             conn.close()
 
+def test_db_handler():
+    # Replace these placeholders with your actual SQL Server details
+    server = '.\SQLDEVELOPER'
+    database = 'FoodsDB'
+    username = 'foodapp'
+    password = 'ghaza'
+
+    # Create the connection string
+    connection_string = (
+        f"DRIVER={{ODBC Driver 17 for SQL Server}};"
+        f"SERVER={server};DATABASE={database};"
+        f"UID={username};PWD={password}"
+    )
+    # Attention!!!!!!!!!
+    # Use the class like below to handle detabase requests
+    db_handler = DBHandler(connection_string)
+
+    temp = db_handler.get_password('sgeorgievskix')
+    print(temp)
+    print(type(temp[0]))
+
+if __name__ == '__main__':
+    test_db_handler()
