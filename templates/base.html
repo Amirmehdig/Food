@@ -24,6 +24,36 @@
         .btn-custom:hover {
             background-color: #d81b60;
         }
+        body {
+            background-color: #f8f9fa; /* Light gray background */
+            margin: 0;
+            padding-top: 20px;
+        }
+        .restaurant-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .restaurant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+        .restaurant-card img {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 150px;
+            object-fit: cover;
+        }
+        .restaurant-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff5722; /* Warm orange */
+            text-align: center;
+        }
+        .container {
+            max-width: 1200px;
+        }
     </style>
 </head>
 <body>
