@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block content %}
 <div class="container">
     <h1 class="text-center text-primary mb-4">Restaurants</h1>
     <div class="row">
@@ -6,13 +7,16 @@
         {% for restaurant in restaurants %}
         <div class="col-md-4 col-sm-6 mb-4">
             <div class="card restaurant-card">
-                <!-- <img src="{{ restaurant.image_url }}" alt="Restaurant Image" class="card-img-top"> -->
-                <div class="card-body">
-                    <h5 class="restaurant-title">{{ restaurant.name }}</h5>
-                </div>
+                <form action="/restaurant/{{ restaurant.id }}" method="GET">
+                    <button type="submit">
+                        <!-- <img src="{{ restaurant.image_url }}" alt="Restaurant Image" class="card-img-top"> -->
+                        <h5 class="restaurant-title">{{ restaurant.name }}</h5>
+                    </button>
+                </form>
             </div>
         </div>
         {% endfor %}
         <!-- Dynamic content ends here -->
     </div>
 </div>
+{% endblock %}

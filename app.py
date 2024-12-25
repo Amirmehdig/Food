@@ -25,11 +25,13 @@ db_handler = DBHandler(connection_string)
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    rows = db_handler.get_all_restaurants()
+    restaurants = [{"name": row.name, "id": row.restaurant_id} for row in rows]
+    #print(session)
+    return render_template('home.html', restaurants=restaurants)
 
 @app.route('/register/', methods=['GET'])
 def register():
-    restaurants = db_handler.get_restaurant_data()
     return render_template('register.html')
 
 
@@ -53,7 +55,12 @@ def register_customer():
         return render_template('register_form.html')
 
 
-
+@app.route('/restaurant/<restaurant_id>/')
+def restaurant(restaurant_id):
+    rows = db_handler.get_foods(int(restaurant_id))
+    foods = [{"name": row.name, "price": row.price, "rating":row.rating, "id":row.food_id} for row in rows]
+    restaurant = {"name": db_handler.get_restaurant_data(rows[0].restaurant_id)[0].name, "id": rows[0].restaurant_id}
+    return render_template('restaurant.html', foods=foods)
 
 
 if __name__ == '__main__':

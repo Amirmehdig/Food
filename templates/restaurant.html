@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container">
+    <h1 class="text-center text-primary mb-4">{{ restaurant.name }}'s Menu</h1>
+    <div class="row">
+        <!-- Replace this block with dynamic content -->
+        {% for food in foods %}
+        <div class="col-md-4 col-sm-6 mb-4">
+            <div class="card food-card">
+                <form action="/food/{{ food.id }}" method="GET">
+                    <button type="submit" class="btn p-0">
+                        <div class="card-body food-info">
+                            <h5 class="food-title">{{ food.name }}</h5>
+                            <p class="food-price">${{ food.price }}</p>
+                            <p class="rating">
+                                {% for _ in range(food.rating) %}
+                                    ★
+                                {% endfor %}
+                                {% for _ in range(5 - food.rating) %}
+                                    ☆
+                                {% endfor %}
+                            </p>
+                        </div>
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+        <!-- Dynamic content ends here -->
+    </div>
+</div>
+{% endblock %}
