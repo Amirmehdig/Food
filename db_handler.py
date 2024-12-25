@@ -318,9 +318,133 @@ class DBHandler:
         finally:
             conn.close()
 
+    # Orders
+    def get_orders_of_user(self, user_id):
+        """Fetches orders of a user using their user_id."""
+        query = "SELECT * FROM Orders WHERE user_id = ?"
+        params = (user_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def get_orders_of_restaurant(self, restaurant_id):
+        """Fetches orders of a restaurant using its restaurant_id."""
+        query = "SELECT * FROM Orders WHERE restaurant_id = ?"
+        params = (restaurant_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def insert_order(self, user_id, restaurant_id, food_id, order_date, delivery_date, status, total_price):
+        """Inserts an order into the Orders table."""
+        query = ("INSERT INTO Orders (user_id, restaurant_id, food_id,"
+                 "order_date, delivery_date, status, total_price) "
+                 "VALUES (?, ?, ?, ?, ?, ?, ?)")
+        params = (user_id, restaurant_id, food_id, order_date, delivery_date, status, total_price)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Order inserted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error inserting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def cancel_order(self, order_id):
+        """Cancels an order using its order_id."""
+        query = ("UPDATE Orders"
+                 "SET status = 'Cancelled' FROM Orders WHERE order_id = ?")
+        params = (order_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Order cancelled successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error deleting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def complete_order(self, order_id):
+        """Completes an order using its order_id."""
+        query = ("UPDATE Orders"
+                 "SET status = 'Completed' FROM Orders WHERE order_id = ?")
+        params = (order_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Order completed successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error deleting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    # Utilities
+    def get_all_restaurants(self):
+        """Fetches all restaurants."""
+        query = "SELECT * FROM Restaurants"
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def 
+
+# Test the DBHandler class
 def test_db_handler():
-    # Replace these placeholders with your actual SQL Server details
-    server = '.\SQLDEVELOPER'
+    server = '127.0.0.1'
     database = 'FoodsDB'
     username = 'foodapp'
     password = 'ghaza'
@@ -331,13 +455,10 @@ def test_db_handler():
         f"SERVER={server};DATABASE={database};"
         f"UID={username};PWD={password}"
     )
-    # Attention!!!!!!!!!
-    # Use the class like below to handle detabase requests
     db_handler = DBHandler(connection_string)
 
-    temp = db_handler.get_password('sgeorgievskix')
-    print(temp)
-    print(type(temp[0]))
+    # Test insert_user
+    db_handler.insert_user("John123", "john123@mail.com", "password", "1234567890", "123 Main St", "2021-09-01", 1, "Customer")
 
 if __name__ == '__main__':
     test_db_handler()
