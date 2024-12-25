@@ -1,5 +1,4 @@
 import pyodbc
-from datetime import datetime
 
 class DBHandler:
     def __init__(self, connection_string):
@@ -232,7 +231,7 @@ class DBHandler:
     # Foods of a restaurant
     def get_food_by_food_id(self, food_id):
         """Fetches food using its food_id."""
-        query = "SELECT * FROM Foods WHERE food_id = ?"
+        query = "SELECT * FROM Food WHERE food_id = ?"
         params = (food_id,)
         conn = self.get_connection()
         if not conn:
@@ -269,8 +268,8 @@ class DBHandler:
             conn.close()
 
     def insert_food(self, name, price, description, is_available, available_count, restaurant_id, rating):
-        """Inserts food into the Foods table."""
-        query = ("INSERT INTO Foods (name, price, description,"
+        """Inserts food into the Food table."""
+        query = ("INSERT INTO Food (name, price, description,"
                  "is_available, available_count, restaurant_id, rating) "
                  "VALUES (?, ?, ?, ?, ?, ?, ?)")
         params = (name, price, description, is_available, available_count, restaurant_id, rating)
@@ -292,7 +291,7 @@ class DBHandler:
 
     def delete_food(self, food_id):
         """Deletes a food using its food_id."""
-        query = "DELETE FROM Foods WHERE food_id = ?"
+        query = "DELETE FROM Food WHERE food_id = ?"
         params = (food_id,)
         conn = self.get_connection()
         if not conn:
@@ -312,7 +311,7 @@ class DBHandler:
 
     def update_food(self, food_id, name, price, description, is_available, available_count, restaurant_id, rating):
         """Updates a food using its food_id."""
-        query = ("UPDATE Foods"
+        query = ("UPDATE Food"
                  "SET name = ?,"
                  "price = ?,"
                  "description = ?,"
@@ -339,9 +338,9 @@ class DBHandler:
             conn.close()
 
     # Orders
-    def get_orders_of_user(self, user_id):
-        """Fetches orders of a user using their user_id."""
-        query = "SELECT * FROM Orders WHERE user_id = ?"
+    def get_order_headers_of_user(self, user_id):
+        """Fetches order headers of a user using their user_id."""
+        query = "SELECT * FROM OrderHeader WHERE user_id = ?"
         params = (user_id,)
         conn = self.get_connection()
         if not conn:
@@ -358,9 +357,28 @@ class DBHandler:
         finally:
             conn.close()
 
-    def get_orders_of_restaurant(self, restaurant_id):
-        """Fetches orders of a restaurant using its restaurant_id."""
-        query = "SELECT * FROM Orders WHERE restaurant_id = ?"
+    def get_order_details(self, order_id):
+        """Fetches order details using its order_id."""
+        query = "SELECT * FROM OrderDetail WHERE order_id = ?"
+        params = (order_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def get_order_headers_of_restaurant(self, restaurant_id):
+        """Fetches order headers of a restaurant using its restaurant_id."""
+        query = "SELECT * FROM OrderHeader WHERE restaurant_id = ?"
         params = (restaurant_id,)
         conn = self.get_connection()
         if not conn:
@@ -377,12 +395,31 @@ class DBHandler:
         finally:
             conn.close()
 
-    def insert_order(self, user_id, restaurant_id, food_id, order_date, delivery_date, status, total_price):
+    def get_order_headers_of_delivery_person(self, delivery_person_id):
+        """Fetches order headers of a delivery person using their delivery_person_id."""
+        query = "SELECT * FROM OrderHeader WHERE delivery_person_id = ?"
+        params = (delivery_person_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def insert_full_order(self, order_date, total_amount, delivery_time, status, user_id, restaurant_id, delivery_person_id):
         """Inserts an order into the Orders table."""
-        query = ("INSERT INTO Orders (user_id, restaurant_id, food_id,"
-                 "order_date, delivery_date, status, total_price) "
+        query = ("INSERT INTO OrderHeader (order_date, total_amount, delivery_time,"
+                 "status, user_id, restaurant_id, delivery_person_id) "
                  "VALUES (?, ?, ?, ?, ?, ?, ?)")
-        params = (user_id, restaurant_id, food_id, order_date, delivery_date, status, total_price)
+        params = (order_date, total_amount, delivery_time, status, user_id, restaurant_id, delivery_person_id)
         conn = self.get_connection()
         if not conn:
             return None
@@ -399,9 +436,30 @@ class DBHandler:
         finally:
             conn.close()
 
+    def insert_order_detail(self, order_id, food_id, quantity, subtotal):
+        """Inserts an order detail into the OrderDetail table."""
+        query = ("INSERT INTO OrderDetail (order_id, food_id, quantity, subtotal) "
+                 "VALUES (?, ?, ?, ?)")
+        params = (order_id, food_id, quantity, subtotal)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Order detail inserted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error inserting data:", e)
+            return None
+        finally:
+            conn.close()
+
     def cancel_order(self, order_id):
         """Cancels an order using its order_id."""
-        query = ("UPDATE Orders"
+        query = ("UPDATE OrderHeader"
                  "SET status = 'Cancelled' FROM Orders WHERE order_id = ?")
         params = (order_id,)
         conn = self.get_connection()
@@ -423,7 +481,7 @@ class DBHandler:
     def complete_order(self, order_id):
         """Completes an order using its order_id."""
         query = ("UPDATE Orders"
-                 "SET status = 'Completed' FROM Orders WHERE order_id = ?")
+                 "SET status = 'Delivered' FROM Orders WHERE order_id = ?")
         params = (order_id,)
         conn = self.get_connection()
         if not conn:
@@ -441,10 +499,33 @@ class DBHandler:
         finally:
             conn.close()
 
-    # Reviews
-    def get_reviews_of_user(self, user_id):
-        """Fetches reviews of a user using their user_id."""
-        query = "SELECT * FROM Reviews WHERE user_id = ?"
+    # Comments
+    def post_comment(self, order_id, rating, comment_text, comment_date):
+        """Posts a comment into the Comments table."""
+        query = ("INSERT INTO Comments (order_id, rating, comment_text, comment_date) "
+                 "VALUES (?, ?, ?, ?)")
+        params = (order_id, rating, comment_text, comment_date)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Comment posted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error inserting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def get_comments_of_user(self, user_id):
+        """Fetches comments of a user using their user_id."""
+        query = ("SELECT comment_id, order_id, rating, comment_text, comment_date"
+                 "FROM"
+                 "Comments INNER JOIN OrderHeader ON Comments.order_id = OrderHeader.order_id")
         params = (user_id,)
         conn = self.get_connection()
         if not conn:
@@ -461,9 +542,11 @@ class DBHandler:
         finally:
             conn.close()
 
-    def get_reviews_of_restaurant(self, restaurant_id):
-        """Fetches reviews of a restaurant using its restaurant_id."""
-        query = "SELECT * FROM Reviews WHERE restaurant_id = ?"
+    def get_comments_of_restaurant(self, restaurant_id):
+        """Fetches comments of a restaurant using its restaurant_id."""
+        query = ("SELECT comment_id, order_id, rating, comment_text, comment_date"
+                 "FROM"
+                 "Comments INNER JOIN OrderHeader ON Comments.order_id = OrderHeader.order_id")
         params = (restaurant_id,)
         conn = self.get_connection()
         if not conn:
@@ -480,11 +563,13 @@ class DBHandler:
         finally:
             conn.close()
 
-    def post_review(self, user_id, restaurant_id, rating, review):
-        """Posts a review into the Reviews table."""
-        query = ("INSERT INTO Reviews (user_id, restaurant_id, rating, review) "
-                 "VALUES (?, ?, ?, ?)")
-        params = (user_id, restaurant_id, rating, review)
+    # Delivery People
+    def insert_delivery_person(self, name, phone_number, vehicle_type, vehicle_number, availability_status):
+        """Inserts a delivery person into the DeliveryPerson table."""
+        query = ("INSERT INTO DeliveryPerson (name, phone_number, vehicle_type,"
+                 "vehicle_number, availability_status) "
+                 "VALUES (?, ?, ?, ?, ?)")
+        params = (name, phone_number, vehicle_type, vehicle_number, availability_status)
         conn = self.get_connection()
         if not conn:
             return None
@@ -493,7 +578,7 @@ class DBHandler:
             cursor = conn.cursor()
             cursor.execute(query, params)
             conn.commit()
-            print("Review posted successfully!")
+            print("Delivery person inserted successfully!")
             return cursor.rowcount
         except Exception as e:
             print("Error inserting data:", e)
@@ -501,10 +586,10 @@ class DBHandler:
         finally:
             conn.close()
 
-    def delete_review(self, review_id):
-        """Deletes a review using its review_id."""
-        query = "DELETE FROM Reviews WHERE review_id = ?"
-        params = (review_id,)
+    def get_delivery_person_by_id(self, delivery_person_id):
+        """Fetches delivery person using their delivery_person_id."""
+        query = "SELECT * FROM DeliveryPerson WHERE delivery_person_id = ?"
+        params = (delivery_person_id,)
         conn = self.get_connection()
         if not conn:
             return None
@@ -512,11 +597,10 @@ class DBHandler:
         try:
             cursor = conn.cursor()
             cursor.execute(query, params)
-            conn.commit()
-            print("Review deleted successfully!")
-            return cursor.rowcount
+            results = cursor.fetchall()
+            return results
         except Exception as e:
-            print("Error deleting data:", e)
+            print("Error fetching data:", e)
             return None
         finally:
             conn.close()
@@ -560,7 +644,7 @@ class DBHandler:
 
     def get_all_foods(self):
         """Fetches all foods."""
-        query = "SELECT * FROM Foods"
+        query = "SELECT * FROM Food"
         conn = self.get_connection()
         if not conn:
             return None
