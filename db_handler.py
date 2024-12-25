@@ -50,7 +50,7 @@ class DBHandler:
             cursor = conn.cursor()
             cursor.execute(query, params)
             conn.commit()
-            print("User inserted successfully!")
+            print("Restaurant inserted successfully!")
             return cursor.rowcount
         except Exception as e:
             print("Error inserting data:", e)
@@ -118,12 +118,13 @@ class DBHandler:
 
     def update_profile_data(self, user_id, name, email, password, phone_number, address, is_active):
         """Updates a user info the using their user_id."""
-        query = ("UPDATE Users"
-                 "SET name = ?,"
-                 "email = ?,"
-                 "phone_number = ?,"
-                 "address = ?,"
-                 "is_active = ?"
+        query = ("UPDATE Users "
+                 "SET name = ?, "
+                 "email = ?, "
+                 "password = ?, "
+                 "phone_number = ?, "
+                 "address = ?, "
+                 "is_active = ? "
                  "WHERE user_id = ?")
         params = (name, email, password, phone_number, address, is_active, user_id)
         conn = self.get_connection()
@@ -182,14 +183,14 @@ class DBHandler:
 
     def update_restaurant_data(self, restaurant_id, name, address,  phone_number, opening_hours, rating, is_open, owner_id):
         """Updates a restaurant info the using its restaurant_id."""
-        query = ("UPDATE Restaurants"
-                 "SET name = ?,"
-                 "address = ?,"
-                 "phone_number = ?,"
-                 "opening_hours = ?,"
-                 "rating = ?,"
-                 "is_open = ?,"
-                 "owner_id = ?"
+        query = ("UPDATE Restaurants "
+                 "SET name = ?, "
+                 "address = ?, "
+                 "phone_number = ?, "
+                 "opening_hours = ?, "
+                 "rating = ?, "
+                 "is_open = ?, "
+                 "owner_id = ? "
                  "WHERE restaurant_id = ?")
         params = (name, address, phone_number, opening_hours, rating, is_open, owner_id, restaurant_id)
         conn = self.get_connection()
@@ -311,14 +312,14 @@ class DBHandler:
 
     def update_food(self, food_id, name, price, description, is_available, available_count, restaurant_id, rating):
         """Updates a food using its food_id."""
-        query = ("UPDATE Food"
-                 "SET name = ?,"
-                 "price = ?,"
-                 "description = ?,"
-                 "is_available = ?,"
-                 "available_count = ?,"
-                 "restaurant_id = ?,"
-                 "rating = ?"
+        query = ("UPDATE Food "
+                 "SET name = ?, "
+                 "price = ?, "
+                 "description = ?, "
+                 "is_available = ?, "
+                 "available_count = ?, "
+                 "restaurant_id = ?, "
+                 "rating = ? "
                  "WHERE food_id = ?")
         params = (name, price, description, is_available, available_count, restaurant_id, rating, food_id)
         conn = self.get_connection()
@@ -459,8 +460,8 @@ class DBHandler:
 
     def cancel_order(self, order_id):
         """Cancels an order using its order_id."""
-        query = ("UPDATE OrderHeader"
-                 "SET status = 'Cancelled' FROM Orders WHERE order_id = ?")
+        query = ("UPDATE OrderHeader "
+                 "SET status = 'Cancelled' WHERE order_id = ?")
         params = (order_id,)
         conn = self.get_connection()
         if not conn:
@@ -480,8 +481,8 @@ class DBHandler:
 
     def complete_order(self, order_id):
         """Completes an order using its order_id."""
-        query = ("UPDATE Orders"
-                 "SET status = 'Delivered' FROM Orders WHERE order_id = ?")
+        query = ("UPDATE OrderHeader "
+                 "SET status = 'Delivered' WHERE order_id = ?")
         params = (order_id,)
         conn = self.get_connection()
         if not conn:
@@ -523,8 +524,8 @@ class DBHandler:
 
     def get_comments_of_user(self, user_id):
         """Fetches comments of a user using their user_id."""
-        query = ("SELECT comment_id, order_id, rating, comment_text, comment_date"
-                 "FROM"
+        query = ("SELECT comment_id, order_id, rating, comment_text, comment_date "
+                 "FROM "
                  "Comments INNER JOIN OrderHeader ON Comments.order_id = OrderHeader.order_id")
         params = (user_id,)
         conn = self.get_connection()
@@ -544,8 +545,8 @@ class DBHandler:
 
     def get_comments_of_restaurant(self, restaurant_id):
         """Fetches comments of a restaurant using its restaurant_id."""
-        query = ("SELECT comment_id, order_id, rating, comment_text, comment_date"
-                 "FROM"
+        query = ("SELECT comment_id, order_id, rating, comment_text, comment_date "
+                 "FROM "
                  "Comments INNER JOIN OrderHeader ON Comments.order_id = OrderHeader.order_id")
         params = (restaurant_id,)
         conn = self.get_connection()
@@ -675,8 +676,6 @@ def test_db_handler():
     )
     db_handler = DBHandler(connection_string)
 
-    # Test insert_user
-    db_handler.insert_user("John123", "john123@mail.com", "password", "1234567890", "123 Main St", "2021-09-01", 1, "Customer")
 
 if __name__ == '__main__':
     test_db_handler()
