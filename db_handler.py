@@ -1,4 +1,5 @@
 import pyodbc
+from datetime import datetime
 
 class DBHandler:
     def __init__(self, connection_string):
