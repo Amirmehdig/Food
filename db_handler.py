@@ -251,7 +251,7 @@ class DBHandler:
 
     def get_food_by_restaurant_id(self, restaurant_id):
         """Fetches foods of a restaurant using its restaurant_id."""
-        query = "SELECT * FROM Foods WHERE restaurant_id = ?"
+        query = "SELECT * FROM Food WHERE restaurant_id = ?"
         params = (restaurant_id,)
         conn = self.get_connection()
         if not conn:
