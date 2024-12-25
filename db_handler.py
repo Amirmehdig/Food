@@ -229,7 +229,26 @@ class DBHandler:
             conn.close()
 
     # Foods of a restaurant
-    def get_foods(self, restaurant_id):
+    def get_food_by_food_id(self, food_id):
+        """Fetches food using its food_id."""
+        query = "SELECT * FROM Foods WHERE food_id = ?"
+        params = (food_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def get_food_by_restaurant_id(self, restaurant_id):
         """Fetches foods of a restaurant using its restaurant_id."""
         query = "SELECT * FROM Foods WHERE restaurant_id = ?"
         params = (restaurant_id,)
@@ -421,7 +440,87 @@ class DBHandler:
         finally:
             conn.close()
 
-    # Utilities
+    # Reviews
+    def get_reviews_of_user(self, user_id):
+        """Fetches reviews of a user using their user_id."""
+        query = "SELECT * FROM Reviews WHERE user_id = ?"
+        params = (user_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def get_reviews_of_restaurant(self, restaurant_id):
+        """Fetches reviews of a restaurant using its restaurant_id."""
+        query = "SELECT * FROM Reviews WHERE restaurant_id = ?"
+        params = (restaurant_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def post_review(self, user_id, restaurant_id, rating, review):
+        """Posts a review into the Reviews table."""
+        query = ("INSERT INTO Reviews (user_id, restaurant_id, rating, review) "
+                 "VALUES (?, ?, ?, ?)")
+        params = (user_id, restaurant_id, rating, review)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Review posted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error inserting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def delete_review(self, review_id):
+        """Deletes a review using its review_id."""
+        query = "DELETE FROM Reviews WHERE review_id = ?"
+        params = (review_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            conn.commit()
+            print("Review deleted successfully!")
+            return cursor.rowcount
+        except Exception as e:
+            print("Error deleting data:", e)
+            return None
+        finally:
+            conn.close()
+
+    # Admin and Utilities
     def get_all_restaurants(self):
         """Fetches all restaurants."""
         query = "SELECT * FROM Restaurants"
@@ -440,7 +539,41 @@ class DBHandler:
         finally:
             conn.close()
 
-    def 
+    def get_all_users(self):
+        """Fetches all users."""
+        query = "SELECT * FROM Users"
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def get_all_foods(self):
+        """Fetches all foods."""
+        query = "SELECT * FROM Foods"
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
 
 # Test the DBHandler class
 def test_db_handler():
