@@ -2,31 +2,54 @@
 {% block content %}
 <div class="container">
     <h1 class="text-center text-primary mb-4">{{ restaurant.name }}'s Menu</h1>
-    <div class="row">
-        <!-- Replace this block with dynamic content -->
-        {% for food in foods %}
-        <div class="col-md-4 col-sm-6 mb-4">
-            <div class="card food-card">
-                <form action="/food/{{ food.id }}" method="GET">
-                    <button type="submit" class="btn p-0">
-                        <div class="card-body food-info">
-                            <h5 class="food-title">{{ food.name }}</h5>
-                            <p class="food-price">${{ food.price }}</p>
-                            <p class="rating">
-                                {% for _ in range(food.rating) %}
-                                    ★
-                                {% endfor %}
-                                {% for _ in range(5 - food.rating) %}
-                                    ☆
-                                {% endfor %}
-                            </p>
+    <form action="/place_order" method="POST">
+        <div class="row">
+            {% for food in foods %}
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card food-card">
+                    <!-- <img src="{{ food.image_url }}" alt="Food Image" class="card-img-top"> -->
+                    <div class="card-body food-info">
+                        <h5 class="food-title">{{ food.name }}</h5>
+                        <p class="food-price">${{ food.price }}</p>
+                        <p class="rating">
+                            {% for _ in range(food.rating) %}
+                                ★
+                            {% endfor %}
+                            {% for _ in range(5 - food.rating) %}
+                                ☆
+                            {% endfor %}
+                        </p>
+                        <!-- Quantity Controls -->
+                        <div class="quantity-control">
+                            <button type="button" onclick="decreaseQuantity('quantity-{{ food.id }}')">-</button>
+                            <input type="number" id="quantity-{{ food.id }}" name="{{ food.id }}" min="0" max="{{ food.available_count }}" value="0">
+                            <button type="button" onclick="increaseQuantity('quantity-{{ food.id }}', '{{ food.available_count }}')">+</button>
                         </div>
-                    </button>
-                </form>
+                    </div>
+                </div>
             </div>
+            {% endfor %}
         </div>
-        {% endfor %}
-        <!-- Dynamic content ends here -->
-    </div>
+        <div class="text-center">
+            <button type="submit" class="place-order-btn">Place Order</button>
+        </div>
+    </form>
 </div>
+
+
+<script>
+    function decreaseQuantity(inputId) {
+        const input = document.getElementById(inputId);
+        if (parseInt(input.value) > 0) {
+            input.value = parseInt(input.value) - 1;
+        }
+    }
+
+    function increaseQuantity(inputId, availableCount) {
+        const input = document.getElementById(inputId);
+        if (parseInt(input.value) < availableCount) {
+            input.value = parseInt(input.value) + 1;
+        }
+    }
+</script>
 {% endblock %}

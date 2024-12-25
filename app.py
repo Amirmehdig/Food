@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 from db_handler import DBHandler
 from datetime import datetime
-
+from cart import Cart
 
 app = Flask(__name__)
 app.secret_key = '1234'  # Required for session-based features like flash
@@ -57,10 +57,34 @@ def register_customer():
 
 @app.route('/restaurant/<restaurant_id>/')
 def restaurant(restaurant_id):
-    rows = db_handler.get_foods(int(restaurant_id))
-    foods = [{"name": row.name, "price": row.price, "rating":row.rating, "id":row.food_id} for row in rows]
-    restaurant = {"name": db_handler.get_restaurant_data(rows[0].restaurant_id)[0].name, "id": rows[0].restaurant_id}
-    return render_template('restaurant.html', foods=foods)
+    if request.method == 'GET':
+        rows = db_handler.get_food_by_restaurant_id(int(restaurant_id))
+        foods = [{"name": row.name, "price": row.price, "rating":int(row.rating), "id":row.food_id, 'restaurant_id':row.restaurant_id, 'available_count':row.available_count} for row in rows]
+        restaurant = db_handler.get_restaurant_data(int(foods[0]['restaurant_id']))
+        restaurant = {"name": restaurant[0].name, "restaurant_id": restaurant[0].restaurant_id}
+        return render_template('restaurant.html', foods=foods, restaurant=restaurant)
+
+@app.route('/place_order', methods=['POST'])
+def place_order():
+    cart = Cart()
+    foods = db_handler.get_all_foods()
+    quantities = request.form
+    order_details = {}
+    for food_id, quantity in quantities.items():
+        if int(quantity) > 0:
+            item = {"food_id": food_id, "quantity": quantity, "price": next(int(quantity) * float(x.price) for x in foods if x.food_id == int(food_id))}
+            print(item)
+
+    # Parse quantities from form data
+    # for food_id, quantity in quantities.items():
+    #     if int(quantity) > 0:  # Only include items with quantity > 0
+    #         order_details[int(food_id)] = int(quantity)
+    # print(order_details)
+    return redirect(url_for('home'))
+    # Process the order (e.g., save to database)
+    # Example: {'1': 2, '3': 1} (Food ID 1 with 2 qty, Food ID 3 with 1 qty)
+    # Save logic here...        
+
 
 
 if __name__ == '__main__':
