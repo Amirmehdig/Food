@@ -20,8 +20,7 @@ connection_string = (
     f"SERVER={server};DATABASE={database};"
     f"UID={username};PWD={password}"
 )
-# Attention!!!!!!!!!
-# Use the class like below to handle detabase requests
+
 db_handler = DBHandler(connection_string)
 
 @app.route('/')
@@ -31,16 +30,42 @@ def home():
     #print(session)
     return render_template('home.html', restaurants=restaurants)
 
+
 @app.route('/register/', methods=['GET'])
 def register():
     return render_template('register.html')
+
+
+@app.route('/login/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    else:
+        name = request.form['name']
+        entered_pass = request.form['password']
+        real_pass = db_handler.get_password(name)
+        if real_pass:
+            if real_pass[0].password == entered_pass:
+                id = int(db_handler.get_user_id(name)[0].user_id)
+                session['user_id'] = id
+                session['role'] = db_handler.get_profile_data(id)[0].role
+                return redirect(url_for('home'))
+            else:
+                return render_template('login.html')
+        else:
+            return render_template('login.html')
+
+
+@app.route('/logout/', methods=['GET'])
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
 
 
 @app.route('/register/customer', methods=['POST', 'GET'])
 def register_customer():
     if request.method == 'POST':
         name = request.form['name']
-        print(type(name))
         email = request.form['email']
         password = request.form['password']
         confirm_password = request.form['confirm_password']
@@ -65,6 +90,7 @@ def restaurant(restaurant_id):
         restaurant = {"name": restaurant[0].name, "restaurant_id": restaurant[0].restaurant_id}
         return render_template('restaurant.html', foods=foods, restaurant=restaurant)
 
+
 @app.route('/place_order', methods=['POST'])
 def place_order():
     cart = Cart()
@@ -87,10 +113,12 @@ def place_order():
     delivery = {'name':delivery.name, 'phone_number':delivery.phone_number, 'vehicle_type':delivery.vehicle_type}
     return render_template('order.html', order=order, delivery=delivery)       
 
+
 @app.route('/delivered/<order_id>/')
 def delivered(order_id):
     db_handler.complete_order(int(order_id))
     return redirect(url_for('home'))
+
 
 @app.route('/canceled/<order_id>/')
 def canceled(order_id):
