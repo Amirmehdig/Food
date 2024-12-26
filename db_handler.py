@@ -415,12 +415,13 @@ class DBHandler:
         finally:
             conn.close()
 
-    def insert_full_order(self, order_date, total_amount, delivery_time, status, user_id, restaurant_id, delivery_person_id):
+    def insert_full_order(self, total_amount, status, user_id, restaurant_id, delivery_person_id):
         """Inserts an order into the Orders table."""
         query = ("INSERT INTO OrderHeader (order_date, total_amount, delivery_time,"
                  "status, user_id, restaurant_id, delivery_person_id) "
-                 "VALUES (?, ?, ?, ?, ?, ?, ?)")
-        params = (order_date, total_amount, delivery_time, status, user_id, restaurant_id, delivery_person_id)
+                 "VALUES (GETDATE(), ?, NULL, ?, ?, ?, ?);"
+                 "SELECT SCOPE_IDENTITY();")
+        params = (total_amount, status, user_id, restaurant_id, delivery_person_id)
         conn = self.get_connection()
         if not conn:
             return None
@@ -428,9 +429,11 @@ class DBHandler:
         try:
             cursor = conn.cursor()
             cursor.execute(query, params)
+            cursor.execute("SELECT @@IDENTITY;")
+            order_id = int(cursor.fetchone()[0])
             conn.commit()
             print("Order inserted successfully!")
-            return cursor.rowcount
+            return order_id
         except Exception as e:
             print("Error inserting data:", e)
             return None
@@ -712,7 +715,7 @@ class DBHandler:
 
 # Test the DBHandler class
 def test_db_handler():
-    server = '127.0.0.1'
+    server = '.\SQLDEVELOPER'
     database = 'FoodsDB'
     username = 'foodapp'
     password = 'ghaza'
@@ -724,6 +727,8 @@ def test_db_handler():
         f"UID={username};PWD={password}"
     )
     db_handler = DBHandler(connection_string)
+    order_id = db_handler.insert_full_order(20.98, 'Delivered', 1, 1, 1)
+    print(order_id)
 
 
 if __name__ == '__main__':
