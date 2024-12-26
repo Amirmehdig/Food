@@ -464,7 +464,7 @@ class DBHandler:
     def cancel_order(self, order_id):
         """Cancels an order using its order_id."""
         query = ("UPDATE OrderHeader "
-                 "SET status = 'Cancelled' WHERE order_id = ?")
+                 "SET status = 'Canceled' WHERE order_id = ?")
         params = (order_id,)
         conn = self.get_connection()
         if not conn:
@@ -485,7 +485,7 @@ class DBHandler:
     def complete_order(self, order_id):
         """Completes an order using its order_id."""
         query = ("UPDATE OrderHeader "
-                 "SET status = 'Delivered' WHERE order_id = ?")
+                 "SET status = 'Delivered', delivery_time = GETDATE() WHERE order_id = ?")
         params = (order_id,)
         conn = self.get_connection()
         if not conn:

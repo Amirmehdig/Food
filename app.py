@@ -82,18 +82,20 @@ def place_order():
     order_id = db_handler.insert_full_order(cart.total(), 'New', int(session['user_id']), restaurant_id, delivery_person_id)
     for item in cart.items:
         db_handler.insert_order_detail(order_id, item['food_id'], item['quantity'], item['price'])
-    
+    order = {"id": order_id}
+    delivery = db_handler.get_delivery_person_by_id(delivery_person_id)[0]
+    delivery = {'name':delivery.name, 'phone_number':delivery.phone_number, 'vehicle_type':delivery.vehicle_type}
+    return render_template('order.html', order=order, delivery=delivery)       
 
-    # Parse quantities from form data
-    # for food_id, quantity in quantities.items():
-    #     if int(quantity) > 0:  # Only include items with quantity > 0
-    #         order_details[int(food_id)] = int(quantity)
-    # print(order_details)
+@app.route('/delivered/<order_id>/')
+def delivered(order_id):
+    db_handler.complete_order(int(order_id))
     return redirect(url_for('home'))
-    # Process the order (e.g., save to database)
-    # Example: {'1': 2, '3': 1} (Food ID 1 with 2 qty, Food ID 3 with 1 qty)
-    # Save logic here...        
 
+@app.route('/canceled/<order_id>/')
+def canceled(order_id):
+    db_handler.cancel_order(int(order_id))
+    return redirect(url_for('home'))
 
 
 if __name__ == '__main__':
