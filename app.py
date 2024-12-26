@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from db_handler import DBHandler
 from datetime import datetime
 from cart import Cart
+import random
 
 app = Flask(__name__)
 app.secret_key = '1234'  # Required for session-based features like flash
@@ -48,7 +49,7 @@ def register_customer():
         phone = request.form['phone']
         address = request.form['address']
         db_handler.insert_user(name, email, password, phone, address, str(datetime.date(datetime.now())), 1, 'Customer')
-        session['user_id'] = db_handler.get_user_id(name)[0]
+        session['user_id'] = int(db_handler.get_user_id(name)[0].user_id)
         session['role'] = 'Customer'
         return redirect(url_for('home'))
     if request.method == 'GET':
@@ -69,11 +70,19 @@ def place_order():
     cart = Cart()
     foods = db_handler.get_all_foods()
     quantities = request.form
-    order_details = {}
+    restaurant_id = 0
+    delivery_person_id = random.randint(1, 10)
     for food_id, quantity in quantities.items():
+        restaurant_id = int(db_handler.get_food_by_food_id(int(food_id))[0].restaurant_id)
         if int(quantity) > 0:
-            item = {"food_id": food_id, "quantity": quantity, "price": next(int(quantity) * float(x.price) for x in foods if x.food_id == int(food_id))}
-            print(item)
+            item = {"food_id": int(food_id), "quantity": int(quantity),
+                     "price": next(int(quantity) * float(x.price) for x in foods if x.food_id == int(food_id)),
+                     "restaurant_id": restaurant_id}
+            cart.add(item)
+    order_id = db_handler.insert_full_order(cart.total(), 'New', int(session['user_id']), restaurant_id, delivery_person_id)
+    for item in cart.items:
+        db_handler.insert_order_detail(order_id, item['food_id'], item['quantity'], item['price'])
+    
 
     # Parse quantities from form data
     # for food_id, quantity in quantities.items():

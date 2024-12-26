@@ -5,7 +5,7 @@ class Cart:
     def add(self, item: dict[int, int, float]):
         self.items.append(item)
 
-    def remove(self, item: dict[int, int, float]):
+    def remove(self, item: dict[int, int, float, int]):
         self.items.remove(item)
 
     def total(self):
