@@ -31,11 +31,6 @@ def home():
     return render_template('home.html', restaurants=restaurants)
 
 
-@app.route('/register/', methods=['GET'])
-def register():
-    return render_template('register.html')
-
-
 @app.route('/login/', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
@@ -62,8 +57,8 @@ def logout():
     return redirect(url_for('home'))
 
 
-@app.route('/register/customer', methods=['POST', 'GET'])
-def register_customer():
+@app.route('/register/', methods=['POST', 'GET'])
+def register():
     if request.method == 'POST':
         name = request.form['name']
         email = request.form['email']
@@ -125,6 +120,15 @@ def canceled(order_id):
     db_handler.cancel_order(int(order_id))
     return redirect(url_for('home'))
 
+
+@app.route('/food/<food_id>/', methods=['GET'])
+def food(food_id):
+    if request.method == 'GET':
+        food = db_handler.get_food_by_food_id(int(food_id))[0]
+        comments = db_handler.get_food_comments(int(food_id))
+        comments = [{"username": comment.name, "rating":int(comment.rating), "date":comment.comment_date, "text":comment.comment_text} for comment in comments]
+        food = {"name": food.name, "price": food.price, "rating":int(food.rating), "description":food.description}
+        return render_template('food.html', food=food, comments=comments)
 
 if __name__ == '__main__':
     app.run(debug=True)

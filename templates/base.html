@@ -138,6 +138,44 @@
             line-height: 30px;
             color: white;
         }
+        .food-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .food-header h1 {
+            color: #ff5722; /* Warm orange */
+            font-weight: bold;
+        }
+        .food-image {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .food-details {
+            margin-top: 20px;
+            font-size: 1.2rem;
+            line-height: 1.5;
+        }
+        .comment-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background-color: #fff;
+        }
+        .comment-card h6 {
+            color: #007bff;
+            font-weight: bold;
+        }
+        .rating {
+            color: #ffc107; /* Gold for ratings */
+        }
+        .comment-date {
+            color: #6c757d; /* Muted gray */
+            font-size: 0.9rem;
+        }
+        .comment-text {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -166,6 +204,9 @@
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="/login/">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/register/">Register</a>
                         </li>
                     {% endif %}
                 </ul>
