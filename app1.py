@@ -36,13 +36,17 @@ def vRestaurantCustomers():
     return render_template('view_data.html', data=table, title="vRestaurantCustomers")
 
 @app.route('/admin/view_orders', methods=['GET'])
-def view_orders():
-    rows = db_handler.get_all_orders()  # Replace with actual method to fetch orders
-    orders = [{"id": row.order_id, "customer": row.customer_name, "date": row.date} for row in rows]
-    return render_template('view_data.html', data=orders, title="Orders")
+def vCustomers():
+    rows = db_handler.get_vCustomers() 
+    table = [{"user_id": row.user_id, "username": row.name, "phone_number": row.phone_number, 
+              "favorite_food": row.favorite_food, "favorite_restaurant": row.favorite_restaurant, 
+              "total_amount": row.total_amount, "total_order": row.total_order} for row in rows]    
+    return render_template('view_data.html', data=table, title="vCustomers")
 
 @app.route('/admin/view_users', methods=['GET'])
-def view_users():
-    rows = db_handler.get_all_users()  # Replace with actual method to fetch users
-    users = [{"id": row.user_id, "name": row.name, "email": row.email} for row in rows]
-    return render_template('view_data.html', data=users, title="Users")
+def vDeliveryPersonSummary():
+    rows = db_handler.get_vDeliveryPersonSummary() 
+    table = [{"delivery_person_id": row.delivery_person_id, "delivery_person_name": row.name,
+              "phone_number": row.phone_number, "most_serviced_restaurant": row.most_serviced_restaurant,
+              "total_order_delivered": row.total_order_delivered, "loyalty": row.loyalty} for row in rows]
+    return render_template('view_data.html', data=table, title="vDeliveryPersonSummary")
