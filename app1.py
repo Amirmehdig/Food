@@ -31,7 +31,7 @@ def admin_dashboard():
 def vRestaurantCustomers():
     rows = db_handler.get_vRestaurantCustomers()
     table = [{"restaurant_id": row.restaurant_id, "restaurant_name": row.name,
-              "user_id": row.user_id, "phone_number": row.phone_number, "total": row.total
+              "user_id": row.user_id, "phone_number": row.phone_number, "total": row.total,
               "total_order": row.total_order, "loyalty": row.loyalty, "favorite_food": row.favorite_food} for row in rows]
     return render_template('view_data.html', data=table, title="vRestaurantCustomers")
 
@@ -50,3 +50,7 @@ def vDeliveryPersonSummary():
               "phone_number": row.phone_number, "most_serviced_restaurant": row.most_serviced_restaurant,
               "total_order_delivered": row.total_order_delivered, "loyalty": row.loyalty} for row in rows]
     return render_template('view_data.html', data=table, title="vDeliveryPersonSummary")
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
