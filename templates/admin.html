@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h1 class="text-center text-primary mb-4">Admin Dashboard</h1>
+    <div class="row">
+        <!-- Button 1 -->
+        <div class="col-md-4 mb-3">
+            <form action="/admin/view_restaurants" method="GET">
+                <button type="submit" class="btn btn-custom w-100">View Restaurants</button>
+            </form>
+        </div>
+        <!-- Button 2 -->
+        <div class="col-md-4 mb-3">
+            <form action="/admin/view_orders" method="GET">
+                <button type="submit" class="btn btn-custom w-100">View Orders</button>
+            </form>
+        </div>
+        <!-- Button 3 -->
+        <div class="col-md-4 mb-3">
+            <form action="/admin/view_users" method="GET">
+                <button type="submit" class="btn btn-custom w-100">View Users</button>
+            </form>
+        </div>
+    </div>
+    <div id="admin-data" class="mt-4">
+        <!-- Placeholder for fetched data -->
+    </div>
+</div>
+{% endblock %}

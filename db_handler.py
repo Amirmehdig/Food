@@ -661,6 +661,55 @@ class DBHandler:
         finally:
             conn.close()
 
+    def get_vRestaurantCustomers(self):
+        query = "SELECT * FROM vDeliveryPersonSummary"
+        conn = self.get_connection()
+        if not conn:
+            return None
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def get_vCustomers(self):
+        query = "SELECT * FROM vCustomers"
+        conn = self.get_connection()
+        if not conn:
+            return None
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
+    def get_vDeliveryPersonSummary(self):
+        query = "SELECT * FROM vDeliveryPersonSummary"
+        conn = self.get_connection()
+        if not conn:
+            return None
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+        
+
 # Test the DBHandler class
 def test_db_handler():
     server = '127.0.0.1'
