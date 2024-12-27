@@ -9,7 +9,12 @@
                 <div class="card food-card">
                     <!-- <img src="{{ food.image_url }}" alt="Food Image" class="card-img-top"> -->
                     <div class="card-body food-info">
-                        <h5 class="food-title">{{ food.name }}</h5>
+                        <h5 class="food-title">
+                            <!-- Clickable Food Name -->
+                            <a href="/food/{{ food.id }}" class="text-decoration-none text-primary">
+                                {{ food.name }}
+                            </a>
+                        </h5>
                         <p class="food-price">${{ food.price }}</p>
                         <p class="rating">
                             {% for _ in range(food.rating) %}
@@ -31,11 +36,10 @@
             {% endfor %}
         </div>
         <div class="text-center">
-            <button type="submit" class="place-order-btn">Place Order</button>
+            <button type="submit" class="place-order-btn btn btn-primary">Place Order</button>
         </div>
     </form>
 </div>
-
 
 <script>
     function decreaseQuantity(inputId) {
@@ -52,4 +56,5 @@
         }
     }
 </script>
+
 {% endblock %}

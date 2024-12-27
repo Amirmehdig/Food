@@ -504,11 +504,11 @@ class DBHandler:
             conn.close()
 
     # Comments
-    def post_comment(self, order_id, rating, comment_text, comment_date):
+    def post_comment(self, order_id, rating, comment_text):
         """Posts a comment into the Comments table."""
         query = ("INSERT INTO Comments (order_id, rating, comment_text, comment_date) "
-                 "VALUES (?, ?, ?, ?)")
-        params = (order_id, rating, comment_text, comment_date)
+                 "VALUES (?, ?, ?, GETDATE())")
+        params = (order_id, rating, comment_text)
         conn = self.get_connection()
         if not conn:
             return None
