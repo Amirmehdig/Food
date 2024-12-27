@@ -130,5 +130,20 @@ def food(food_id):
         food = {"name": food.name, "price": food.price, "rating":int(food.rating), "description":food.description}
         return render_template('food.html', food=food, comments=comments)
 
+@app.route('/orders/', methods=['GET', 'POST'])
+def orders():
+    orders = db_handler.get_order_headers_of_user(int(session['user_id']))
+    if request.method == 'GET':
+        if orders[0] != None:
+            orders = [{"order_id": order.order_id, "status": order.status, "total_amount": order.total_amount, "restaurant_name":order.restaurant_name,
+                    "delivery_person_name":order.delivery_person_name, "order_date":order.order_date} for order in orders]            
+        return render_template('user_orders.html', orders=orders)
+    if request.method == 'POST':
+        order_id = request.form.get('order_id')
+        comment = request.form.get('comment')
+        rating = request.form.get('rating')
+        db_handler.post_comment(int(order_id), int(rating), comment)
+        return render_template('user_orders.html', orders=orders)
+
 if __name__ == '__main__':
     app.run(debug=True)

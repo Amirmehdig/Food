@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h1 class="text-center text-primary mb-4">My Orders</h1>
+    <div class="orders">
+        {% for order in orders %}
+        <div class="order-card">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Order Date:</strong> {{ order.order_date }}</p>
+                    <p><strong>Total Amount:</strong> ${{ order.total_amount }}</p>
+                    <p><strong>Restaurant:</strong> {{ order.restaurant_name }}</p>
+                    <p><strong>Delivery Person:</strong> {{ order.delivery_person_name }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p class="order-status text-primary"><strong>Status:</strong> {{ order.status }}</p>
+                    {% if order.status == "Delivered" %}
+                    <button class="btn btn-success comment-btn" onclick="showCommentBox('{{ order.order_id }}')">Comment & Rate</button>
+                    <div id="comment-box-{{ order.order_id }}" class="comment-box mt-3">
+                        <textarea class="form-control mb-2" id="comment-text-{{ order.order_id }}" placeholder="Write your comment here"></textarea>
+                        <div class="rating-box">
+                            <label><strong>Rate:</strong></label>
+                            <div class="rating-stars" id="rating-stars-{{ order.order_id }}">
+                                <span data-rating="1" onclick="setRating('{{ order.order_id }}', 1)">★</span>
+                                <span data-rating="2" onclick="setRating('{{ order.order_id }}', 2)">★</span>
+                                <span data-rating="3" onclick="setRating('{{ order.order_id }}', 3)">★</span>
+                                <span data-rating="4" onclick="setRating('{{ order.order_id }}', 4)">★</span>
+                                <span data-rating="5" onclick="setRating('{{ order.order_id }}', 5)">★</span>
+                            </div>
+                        </div>
+                        <div class="comment-actions">
+                            <button class="btn btn-primary" onclick="submitComment('{{ order.order_id }}')">Send</button>
+                            <button class="btn btn-secondary" onclick="hideCommentBox('{{ order.order_id }}')">Cancel</button>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+<script>
+    function showCommentBox(orderId) {
+        document.getElementById(`comment-box-${orderId}`).style.display = 'block';
+    }
+
+    function hideCommentBox(orderId) {
+        const commentBox = document.getElementById(`comment-box-${orderId}`);
+        commentBox.style.display = 'none';
+        commentBox.querySelector('textarea').value = ''; // Clear comment box
+        const stars = commentBox.querySelectorAll('.rating-stars span');
+        stars.forEach(star => star.classList.remove('active')); // Reset star rating
+    }
+
+    function setRating(orderId, rating) {
+        const stars = document.getElementById(`rating-stars-${orderId}`).querySelectorAll('span');
+        stars.forEach(star => {
+            if (parseInt(star.getAttribute('data-rating')) <= rating) {
+                star.classList.add('active');
+            } else {
+                star.classList.remove('active');
+            }
+        });
+    }
+
+    function submitComment(orderId) {
+    const comment = document.getElementById(`comment-text-${orderId}`).value;
+    const stars = document.getElementById(`rating-stars-${orderId}`).querySelectorAll('span');
+    let rating = 0;
+
+    stars.forEach(star => {
+        if (star.classList.contains('active')) {
+            rating = parseInt(star.getAttribute('data-rating'));
+        }
+    });
+
+    if (!comment || rating === 0) {
+        alert('Please provide a comment and rating!');
+        return;
+    }
+
+    // Prepare form data
+    const formData = new FormData();
+    formData.append('order_id', orderId);
+    formData.append('comment', comment);
+    formData.append('rating', rating);
+
+    // Send POST request to the server
+    fetch('/orders/', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text(); // Parse the response as text if no JSON is expected
+    })
+    .then(responseData => {
+        // Handle the server's response
+        console.log('Comment submitted successfully:', responseData);
+        alert('Your comment has been submitted!');
+        hideCommentBox(orderId); // Clear and hide comment box
+    })
+    .catch(error => {
+        console.error('Error submitting comment:', error);
+        alert('There was an error submitting your comment. Please try again.');
+    });
+}
+</script>
+{% endblock %}

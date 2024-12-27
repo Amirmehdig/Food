@@ -176,6 +176,27 @@
         .comment-text {
             margin-top: 10px;
         }
+        .order-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 15px;
+        }
+        .order-status {
+            font-weight: bold;
+        }
+        .rating-stars span {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #ddd; /* Default color for stars */
+        }
+        .rating-stars span.active {
+            color: #ffc107; /* Gold color for active stars */
+        }
+        .comment-actions {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -196,7 +217,7 @@
                             <a class="nav-link" href="#">Profile</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Orders</a>
+                            <a class="nav-link" href="/orders/">Orders</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="/logout/">Logout</a>

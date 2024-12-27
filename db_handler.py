@@ -366,7 +366,9 @@ class DBHandler:
     # Orders
     def get_order_headers_of_user(self, user_id):
         """Fetches order headers of a user using their user_id."""
-        query = "SELECT * FROM OrderHeader WHERE user_id = ?"
+        query = '''SELECT oh.order_id, oh.order_date, oh.total_amount, oh.status, r.name restaurant_name, dp.name delivery_person_name
+                    FROM OrderHeader oh inner join Restaurants r on oh.restaurant_id = r.restaurant_id inner join DeliveryPerson dp on oh.delivery_person_id = dp.delivery_person_id 
+                    WHERE user_id = ?'''
         params = (user_id,)
         conn = self.get_connection()
         if not conn:
