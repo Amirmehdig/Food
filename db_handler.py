@@ -338,6 +338,31 @@ class DBHandler:
         finally:
             conn.close()
 
+    def get_food_comments(self, food_id):
+        """Fetches comments of a food using its food_id."""
+        query = ("SELECT Users.name, Comments.comment_text, Comments.comment_date, Comments.rating "
+                 "FROM Comments "
+                 "INNER JOIN OrderDetail ON Comments.order_id = OrderDetail.order_id "
+                 "INNER JOIN OrderHeader ON OrderDetail.order_id = OrderHeader.order_id "
+                 "INNER JOIN Users ON OrderHeader.user_id = Users.user_id "
+                 "WHERE OrderHeader.status = 'Delivered' AND OrderDetail.food_id = ? "
+                 )
+        params = (food_id,)
+        conn = self.get_connection()
+        if not conn:
+            return None
+
+        try:
+            cursor = conn.cursor()
+            cursor.execute(query, params)
+            results = cursor.fetchall()
+            return results
+        except Exception as e:
+            print("Error fetching data:", e)
+            return None
+        finally:
+            conn.close()
+
     # Orders
     def get_order_headers_of_user(self, user_id):
         """Fetches order headers of a user using their user_id."""
