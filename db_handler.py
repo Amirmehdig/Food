@@ -692,7 +692,7 @@ class DBHandler:
             conn.close()
 
     def get_vRestaurantCustomers(self):
-        query = "SELECT * FROM vDeliveryPersonSummary"
+        query = "SELECT * FROM vRestaurantCustomers"
         conn = self.get_connection()
         if not conn:
             return None
