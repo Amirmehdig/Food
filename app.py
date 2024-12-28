@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from db_handler import DBHandler
 from datetime import datetime
 from cart import Cart
-from auth import login_required
+from auth import login_required, admin_required
 import random
 
 app = Flask(__name__)
@@ -148,10 +148,12 @@ def orders():
         return render_template('user_orders.html', orders=orders)
 
 @app.route('/admin')
+@admin_required
 def admin_dashboard():
     return render_template('admin.html')
 
 @app.route('/admin/view_restaurants', methods=['GET'])
+@admin_required
 def vRestaurantCustomers():
     rows = db_handler.get_vRestaurantCustomers()
     table = [{"restaurant_id": row.restaurant_id, "restaurant_name": row.name,
@@ -160,6 +162,7 @@ def vRestaurantCustomers():
     return render_template('view_data.html', data=table, title="vRestaurantCustomers")
 
 @app.route('/admin/view_orders', methods=['GET'])
+@admin_required
 def vCustomers():
     rows = db_handler.get_vCustomers() 
     table = [{"user_id": row.user_id, "username": row.name, "phone_number": row.phone_number, 
@@ -168,6 +171,7 @@ def vCustomers():
     return render_template('view_data.html', data=table, title="vCustomers")
 
 @app.route('/admin/view_users', methods=['GET'])
+@admin_required
 def vDeliveryPersonSummary():
     rows = db_handler.get_vDeliveryPersonSummary() 
     table = [{"delivery_person_id": row.delivery_person_id, "delivery_person_name": row.name,
