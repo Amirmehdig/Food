@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, session, redirect, url_for
 from db_handler import DBHandler
 from datetime import datetime
 from cart import Cart
+from auth import login_required
 import random
 
 app = Flask(__name__)
@@ -27,7 +28,6 @@ db_handler = DBHandler(connection_string)
 def home():
     rows = db_handler.get_all_restaurants()
     restaurants = [{"name": row.name, "id": row.restaurant_id} for row in rows]
-    #print(session)
     return render_template('home.html', restaurants=restaurants)
 
 
@@ -87,6 +87,7 @@ def restaurant(restaurant_id):
 
 
 @app.route('/place_order', methods=['POST'])
+@login_required
 def place_order():
     cart = Cart()
     foods = db_handler.get_all_foods()
@@ -131,6 +132,7 @@ def food(food_id):
         return render_template('food.html', food=food, comments=comments)
 
 @app.route('/orders/', methods=['GET', 'POST'])
+@login_required
 def orders():
     orders = db_handler.get_order_headers_of_user(int(session['user_id']))
     if request.method == 'GET':
