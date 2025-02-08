@@ -87,4 +87,4 @@ Pull requests are welcome! Feel free to improve the UI, add features, or fix bug
 
 ---
 
-💡 *This project was developed for learning purposes and as part of a university course.*
+💡 *This project was developed for learning purposes and as part of a university database lab course.*
