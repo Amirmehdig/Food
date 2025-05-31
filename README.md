@@ -49,7 +49,7 @@ A modern and feature-rich food delivery web application built using Flask. Users
 
 1️⃣ Clone the repository:
 ```bash
- git clone https://github.com/yourusername/food-delivery-app.git
+ git clone https://github.com/Amirmehdig/food-delivery-app.git
 ```
 
 2️⃣ Install dependencies:
